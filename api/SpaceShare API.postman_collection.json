@@ -104,7 +104,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{token}}",
+                  "value": "{{access_token}}",
                   "type": "string"
                 }
               ]
@@ -131,14 +131,14 @@
       "name": "Workspaces",
       "item": [
         {
-          "name": "Create Listing",
+          "name": "Create Workspace",
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -153,7 +153,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"title\": \"Modern Co-working Space\",\r\n  \"description\": \"Quiet workspace with fast WiFi\",\r\n  \"location\": \"Lagos\",\r\n  \"price\": 5000,\r\n  \"capacity\": 20,\r\n  \"amenities\": [\r\n    \"WiFi\",\r\n    \"Parking\",\r\n    \"Air Conditioning\"\r\n  ]\r\n}",
+              "raw": "{\r\n  \"title\": \"Sunny Downtown Desk\",\r\n  \"description\": \"A quiet desk space with great lighting.\",\r\n  \"workspace_type\": \"desk\",\r\n  \"capacity\": 1,\r\n  \"address\": \"12 Adeola Odeku St\",\r\n  \"city\": \"Lagos\",\r\n  \"state\": \"Lagos\",\r\n  \"latitude\": 6.4281,\r\n  \"longitude\": 3.4219\r\n}\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -177,14 +177,7 @@
           "name": "Get All Workspaces",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access_token}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [
@@ -195,13 +188,35 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/workspaces",
+              "raw": "{{base_url}}/api/workspaces?page=1&limit=10&city=Lagos&workspace_type=desk",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "workspaces"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Lagos",
+                  "type": "text"
+                },
+                {
+                  "key": "workspace_type",
+                  "value": "desk",
+                  "type": "text"
+                }
               ]
             },
             "description": "Retrieves all workspace listings. Supports searching and filtering by location, date, price, amenities, and reliability score"
@@ -209,17 +224,10 @@
           "response": []
         },
         {
-          "name": "Get Workspace Details",
+          "name": "Get Workspace by ID",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access_token}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [
@@ -258,7 +266,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -273,7 +281,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"title\": \"Updated Co-working Space\",\r\n  \"description\": \"Updated description\",\r\n  \"location\": \"Lagos\",\r\n  \"price\": 6000,\r\n  \"capacity\": 25,\r\n  \"amenities\": [\r\n    \"WiFi\",\r\n    \"Parking\",\r\n    \"Air Conditioning\"\r\n  ]\r\n}",
+              "raw": "{\r\n  \"host_id\": \"{{hostId}}\",\r\n  \"title\": \"Updated title\"\r\n}\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -309,7 +317,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -322,6 +330,15 @@
                 "type": "text"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"host_id\": \"{{hostId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/api/workspaces/:id",
               "host": [
@@ -351,7 +368,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -362,7 +379,7 @@
               "mode": "formdata",
               "formdata": [
                 {
-                  "key": "photos",
+                  "key": "photo",
                   "type": "file",
                   "uuid": "7d194e7e-ea47-4e6e-8e82-094fa1154124",
                   "value": null
@@ -399,7 +416,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -414,7 +431,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"status\": \"approved\"\r\n}",
+              "raw": "{\r\n  \"status\": \"admin_approved\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -446,8 +463,35 @@
         {
           "name": "Find me Power Now",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/workspaces/find-me-power-now",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "workspaces",
+                "find-me-power-now"
+              ]
+            }
           },
           "response": []
         }
@@ -631,7 +675,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{seekerToken}}",
                   "type": "string"
                 }
               ]
@@ -646,7 +690,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"workspaceId\": \"workspace_id\",\r\n  \"date\": \"2026-08-15\",\r\n  \"startTime\": \"09:00\",\r\n  \"endTime\": \"17:00\"\r\n}",
+              "raw": "{\r\n  \"workspaceId\": \"{{workspaceId}}\",\r\n  \"startTime\": \"2026-08-05T09:00:00.000Z\",\r\n  \"endTime\": \"2026-08-05T17:00:00.000Z\",\r\n  \"corporateAccountId\": null,\r\n  \"totalAmount\": 120.00\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -717,7 +761,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{seekerToken}}",
                   "type": "string"
                 }
               ]
@@ -731,13 +775,36 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/bookings",
+              "raw": "{{base_url}}/api/bookings/user?role=seeker&status=confirmed&page=1&limit=10",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
-                "bookings"
+                "bookings",
+                "user"
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "seeker",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "confirmed",
+                  "type": "text"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "type": "text"
+                }
               ]
             },
             "description": "Returns all bookings belonging to authenticated user."
@@ -752,7 +819,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -783,7 +850,7 @@
                 }
               ]
             },
-            "description": "Accepts a pending booking request."
+            "description": "Used when a workspace is set to Request-to-Book. The host accepts the pending request and a 6-digit check-in code is generated"
           },
           "response": []
         },
@@ -795,7 +862,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -838,12 +905,12 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{seekerToken}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "PATCH",
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
@@ -851,6 +918,15 @@
                 "type": "text"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"reason\": \"Schedule clash due to project meeting shift.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/api/bookings/:id/cancel",
               "host": [
@@ -881,7 +957,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -894,6 +970,15 @@
                 "type": "text"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"checkinCode\": \"482915\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/api/bookings/:id/checkin",
               "host": [
@@ -912,7 +997,7 @@
                 }
               ]
             },
-            "description": "Checks a user into a confirmed booking."
+            "description": "Host enters the guest's 6-digit check-in code to start the workspace session. Locked out after 3 failed attempts."
           },
           "response": []
         }
@@ -1697,6 +1782,34 @@
   "variable": [
     {
       "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "seekerToken",
+      "value": ""
+    },
+    {
+      "key": "hostToken",
+      "value": ""
+    },
+    {
+      "key": "workspaceId",
+      "value": ""
+    },
+    {
+      "key": "corporateAccountId",
+      "value": ""
+    },
+    {
+      "key": "bookingId",
+      "value": ""
+    },
+    {
+      "key": "hostID",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
       "value": ""
     }
   ]
