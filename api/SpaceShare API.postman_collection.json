@@ -690,7 +690,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"workspaceId\": \"{{workspaceId}}\",\r\n  \"startTime\": \"2026-08-05T09:00:00.000Z\",\r\n  \"endTime\": \"2026-08-05T17:00:00.000Z\",\r\n  \"corporateAccountId\": null,\r\n  \"totalAmount\": 120.00\r\n}",
+              "raw": "{\r\n  \"workspaceId\": \"{{workspaceId}}\",\r\n  \"startTime\": \"2026-08-03T14:00:00Z\",\r\n  \"endTime\": \"2026-08-03T16:00:00Z\",\r\n  \"totalAmount\": 5000\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -707,7 +707,7 @@
                 "bookings"
               ]
             },
-            "description": "Create a booking for workspace."
+            "description": "# POST /api/bookings\n\nCreates a booking.\n\n**Authorization:** `Bearer {{seekerToken}}`\n\n## Request Body\n\n``` json\n{\n  \"workspaceId\": \"{{workspaceId}}\",\n  \"startTime\": \"2026-08-03T14:00:00Z\",\n  \"endTime\": \"2026-08-03T16:00:00Z\",\n  \"totalAmount\": 5000\n}\n\n ```\n\n## Success Response (201)\n\n``` json\n{\n  \"status\": \"success\",\n  \"message\": \"Booking created successfully. Pending payment confirmation.\",\n  \"data\": {\n    \"booking\": {\n      \"id\": \"...\",\n      \"workspace_id\": \"...\",\n      \"seeker_id\": \"...\",\n      \"start_time\": \"...\",\n      \"end_time\": \"...\",\n      \"mode\": \"instant\",\n      \"status\": \"confirmed\",\n      \"checkin_code\": \"397812\",\n      \"total_amount\": \"5000.00\"\n    }\n  }\n}\n\n ```\n\n## Error Responses\n\n### 409 Conflict\n\n``` json\n{\n  \"status\": \"error\",\n  \"message\": \"Selected time slot is no longer available.\"\n}\n\n ```\n\n### 403 Forbidden\n\n- Corporate budget exceeded\n    \n- User not authorized\n    \n\n### 400 Bad Request\n\n- Workspace not found\n    \n- Workspace not currently bookable\n    \n\n## Concurrency Test\n\nThis endpoint uses database transactions with row-level locking (`SELECT ... FOR UPDATE`) to prevent double booking.\n\nTo verify:\n\n1. Obtain a valid seeker token.\n    \n2. Send two `POST /api/bookings` requests simultaneously using the same `workspaceId`, `startTime`, and `endTime`.\n    \n3. Expected result:\n    \n    - One request returns **201 Created**.\n        \n    - The other returns **409 Conflict** with the message:  \n        `\"Selected time slot is no longer available.\"`\n        \n\nA reusable `concurrency-test.js` script is available in the project root for this test."
           },
           "response": []
         },
