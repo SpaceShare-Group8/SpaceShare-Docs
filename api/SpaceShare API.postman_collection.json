@@ -690,7 +690,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"workspaceId\": \"{{workspaceId}}\",\r\n  \"startTime\": \"2026-08-03T14:00:00Z\",\r\n  \"endTime\": \"2026-08-03T16:00:00Z\",\r\n  \"totalAmount\": 5000\r\n}",
+              "raw": "{\r\n  \"workspaceId\": \"32e38db9-50f7-4ffa-97c5-b9d2acc56a80\",\r\n  \"startTime\": \"2026-08-03T14:00:00Z\",\r\n  \"endTime\": \"2026-08-03T16:00:00Z\",\r\n  \"totalAmount\": 5000\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -707,7 +707,7 @@
                 "bookings"
               ]
             },
-            "description": "# POST /api/bookings\n\nCreates a booking.\n\n**Authorization:** `Bearer {{seekerToken}}`\n\n## Request Body\n\n``` json\n{\n  \"workspaceId\": \"{{workspaceId}}\",\n  \"startTime\": \"2026-08-03T14:00:00Z\",\n  \"endTime\": \"2026-08-03T16:00:00Z\",\n  \"totalAmount\": 5000\n}\n\n ```\n\n## Success Response (201)\n\n``` json\n{\n  \"status\": \"success\",\n  \"message\": \"Booking created successfully. Pending payment confirmation.\",\n  \"data\": {\n    \"booking\": {\n      \"id\": \"...\",\n      \"workspace_id\": \"...\",\n      \"seeker_id\": \"...\",\n      \"start_time\": \"...\",\n      \"end_time\": \"...\",\n      \"mode\": \"instant\",\n      \"status\": \"confirmed\",\n      \"checkin_code\": \"397812\",\n      \"total_amount\": \"5000.00\"\n    }\n  }\n}\n\n ```\n\n## Error Responses\n\n### 409 Conflict\n\n``` json\n{\n  \"status\": \"error\",\n  \"message\": \"Selected time slot is no longer available.\"\n}\n\n ```\n\n### 403 Forbidden\n\n- Corporate budget exceeded\n    \n- User not authorized\n    \n\n### 400 Bad Request\n\n- Workspace not found\n    \n- Workspace not currently bookable\n    \n\n## Concurrency Test\n\nThis endpoint uses database transactions with row-level locking (`SELECT ... FOR UPDATE`) to prevent double booking.\n\nTo verify:\n\n1. Obtain a valid seeker token.\n    \n2. Send two `POST /api/bookings` requests simultaneously using the same `workspaceId`, `startTime`, and `endTime`.\n    \n3. Expected result:\n    \n    - One request returns **201 Created**.\n        \n    - The other returns **409 Conflict** with the message:  \n        `\"Selected time slot is no longer available.\"`\n        \n\nA reusable `concurrency-test.js` script is available in the project root for this test."
+            "description": "# POST /api/bookings\n\nCreates a booking.\n\n**Authorization:** `Bearer {{seekerToken}}`\n\n## Example Success Response (201)\n\n``` json\n{\n  \"status\": \"success\",\n  \"message\": \"Booking created successfully. Pending payment confirmation.\",\n  \"data\": {\n    \"booking\": {\n      \"id\": \"...\",\n      \"workspace_id\": \"...\",\n      \"seeker_id\": \"...\",\n      \"start_time\": \"2026-08-03T14:00:00.000Z\",\n      \"end_time\": \"2026-08-03T16:00:00.000Z\",\n      \"status\": \"pending_payment\",\n      \"total_amount\": \"5000.00\"\n    }\n  }\n}\n\n ```\n\n## Error Responses\n\n### 409 Conflict\n\n``` json\n{\n  \"status\": \"error\",\n  \"message\": \"Selected time slot is no longer available.\"\n}\n\n ```\n\n### 403 Forbidden\n\n- Corporate budget exceeded\n    \n- User not authorized\n    \n\n### 400 Bad Request\n\n- Workspace not found\n    \n- Workspace not currently bookable\n    \n\nStartFragment\n\n### Example Error (409)\n\n```\n{\n  \"status\": \"error\",\n  \"message\": \"Selected time slot is no longer available.\"\n}\n\n ```\n\nEndFragment\n\n## Concurrency Test\n\nThis endpoint uses database transactions with row-level locking (`SELECT ... FOR UPDATE`) to prevent double booking.\n\nTo verify:\n\n1. Obtain a valid seeker token.\n    \n2. Send two `POST /api/bookings` requests simultaneously using the same `workspaceId`, `startTime`, and `endTime`.\n    \n3. Expected result:\n    \n    - One request returns **201 Created**.\n        \n    - The other returns **409 Conflict** with the message:  \n        `\"Selected time slot is no longer available.\"`\n        \n\nA reusable `concurrency-test.js` script is available in the project root for this test."
           },
           "response": []
         },
@@ -905,12 +905,12 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{seekerToken}}",
+                  "value": "{{access_token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "POST",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -945,7 +945,7 @@
                 }
               ]
             },
-            "description": "Cancels an existing booking."
+            "description": "Cancels an existing booking. Either the seeker or the host can cancel. The response includes the `cancelled_by` field, which downstream services use for refund processing.  \n  \n\n**Authentication:** Use either a seeker or host access token.\n\n- If a seeker cancels, `cancelled_by` will be `\"seeker\"`.\n    \n- If a host cancels, `cancelled_by` will be `\"host\"`."
           },
           "response": []
         },
@@ -998,6 +998,53 @@
               ]
             },
             "description": "Host enters the guest's 6-digit check-in code to start the workspace session. Locked out after 3 failed attempts."
+          },
+          "response": []
+        },
+        {
+          "name": "Extend Booking",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{seeker_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"newEndTime\": \"2026-08-03T18:00:00Z\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bookings/:id/extend",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ":id",
+                "extend"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Extends an in-progress booking if the requested extension does not overlap another booking. Concurrent extension requests are safely handled using row-level locking."
           },
           "response": []
         }
