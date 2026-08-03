@@ -104,7 +104,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{token}}",
+                  "value": "{{access_token}}",
                   "type": "string"
                 }
               ]
@@ -131,14 +131,14 @@
       "name": "Workspaces",
       "item": [
         {
-          "name": "Create Listing",
+          "name": "Create Workspace",
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -153,7 +153,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"title\": \"Modern Co-working Space\",\r\n  \"description\": \"Quiet workspace with fast WiFi\",\r\n  \"location\": \"Lagos\",\r\n  \"price\": 5000,\r\n  \"capacity\": 20,\r\n  \"amenities\": [\r\n    \"WiFi\",\r\n    \"Parking\",\r\n    \"Air Conditioning\"\r\n  ]\r\n}",
+              "raw": "{\r\n  \"title\": \"Sunny Downtown Desk\",\r\n  \"description\": \"A quiet desk space with great lighting.\",\r\n  \"workspace_type\": \"desk\",\r\n  \"capacity\": 1,\r\n  \"address\": \"12 Adeola Odeku St\",\r\n  \"city\": \"Lagos\",\r\n  \"state\": \"Lagos\",\r\n  \"latitude\": 6.4281,\r\n  \"longitude\": 3.4219\r\n}\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -177,14 +177,7 @@
           "name": "Get All Workspaces",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access_token}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [
@@ -195,13 +188,35 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/workspaces",
+              "raw": "{{base_url}}/api/workspaces?page=1&limit=10&city=Lagos&workspace_type=desk",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "workspaces"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Lagos",
+                  "type": "text"
+                },
+                {
+                  "key": "workspace_type",
+                  "value": "desk",
+                  "type": "text"
+                }
               ]
             },
             "description": "Retrieves all workspace listings. Supports searching and filtering by location, date, price, amenities, and reliability score"
@@ -209,17 +224,10 @@
           "response": []
         },
         {
-          "name": "Get Workspace Details",
+          "name": "Get Workspace by ID",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access_token}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [
@@ -258,7 +266,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -273,7 +281,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"title\": \"Updated Co-working Space\",\r\n  \"description\": \"Updated description\",\r\n  \"location\": \"Lagos\",\r\n  \"price\": 6000,\r\n  \"capacity\": 25,\r\n  \"amenities\": [\r\n    \"WiFi\",\r\n    \"Parking\",\r\n    \"Air Conditioning\"\r\n  ]\r\n}",
+              "raw": "{\r\n  \"host_id\": \"{{hostId}}\",\r\n  \"title\": \"Updated title\"\r\n}\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -309,7 +317,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -322,6 +330,15 @@
                 "type": "text"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"host_id\": \"{{hostId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/api/workspaces/:id",
               "host": [
@@ -351,7 +368,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -362,7 +379,7 @@
               "mode": "formdata",
               "formdata": [
                 {
-                  "key": "photos",
+                  "key": "photo",
                   "type": "file",
                   "uuid": "7d194e7e-ea47-4e6e-8e82-094fa1154124",
                   "value": null
@@ -399,7 +416,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{adminToken}}",
                   "type": "string"
                 }
               ]
@@ -414,7 +431,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"status\": \"approved\"\r\n}",
+              "raw": "{\r\n  \"status\": \"admin_approved\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -446,8 +463,88 @@
         {
           "name": "Find me Power Now",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/workspaces/find-me-power-now",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "workspaces",
+                "find-me-power-now"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Workspace Photos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/workspaces/{{workspace_id}}/photos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "workspaces",
+                "{{workspace_id}}",
+                "photos"
+              ]
+            },
+            "description": "# Get Workspace Photos\n\nRetrieves all photos associated with a workspace.\n\nThis endpoint is publicly accessible.\n\n## Authorization\n\nNo Authentication Required\n\n## Endpoint\n\nGET /api/workspaces/:id/photos\n\n## Path Parameters\n\n| Parameter | Description |\n| --- | --- |\n| workspace_id | The workspace ID. |\n\n## Request Body\n\nNone\n\n## Success Response (200)\n\n``` json\n[\n  {\n    \"id\": \"photo-id\",\n    \"workspace_id\": \"workspace-id\",\n    \"image_url\": \"https://...\",\n    \"created_at\": \"2026-08-03T12:00:00.000Z\"\n  }\n]\n\n ```\n\n## Error Responses\n\n### 404 Not Found\n\nReturned if the workspace does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Workspace Photos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{host_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/workspaces/{{workspace_id}}/photos/{{photo_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "workspaces",
+                "{{workspace_id}}",
+                "photos",
+                "{{photo_id}}"
+              ]
+            },
+            "description": "hDelete Workspace Photo\n\nDeletes a photo belonging to a workspace.\n\nOnly the workspace owner (Host) or an Admin can delete a photo.\n\n## Authorization\n\nBearer Token (Host or Admin)\n\n## Endpoint\n\nDELETE /api/workspaces/:workspaceId/photos/:photoId\n\n## Path Parameters\n\n| Parameter | Description |\n| --- | --- |\n| workspace_id | Workspace ID |\n| photo_id | Photo ID |\n\n## Request Body\n\nNone\n\n## Success Response (200)\n\n``` json\n{\n  \"status\": true,\n  \"message\": \"Photo deleted successfully\",\n  \"photos_remaining\": 0,\n  \"media_status\": \"incomplete\"\n}\n\n ```\n\n## Error Responses\n\n### 403 Forbidden\n\nReturned when a user who is not the workspace owner or an admin attempts to delete the photo.\n\n### 404 Not Found\n\nReturned if the workspace or photo does not exist."
           },
           "response": []
         }
@@ -631,7 +728,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{seekerToken}}",
                   "type": "string"
                 }
               ]
@@ -640,13 +737,12 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
+                "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"workspaceId\": \"workspace_id\",\r\n  \"date\": \"2026-08-15\",\r\n  \"startTime\": \"09:00\",\r\n  \"endTime\": \"17:00\"\r\n}",
+              "raw": "{\r\n  \"workspaceId\": \"32e38db9-50f7-4ffa-97c5-b9d2acc56a80\",\r\n  \"startTime\": \"2026-08-03T14:00:00Z\",\r\n  \"endTime\": \"2026-08-03T16:00:00Z\",\r\n  \"totalAmount\": 5000\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -663,7 +759,7 @@
                 "bookings"
               ]
             },
-            "description": "Create a booking for workspace."
+            "description": "# POST /api/bookings\n\nCreates a booking.\n\n**Authorization:** `Bearer {{seekerToken}}`\n\n## Example Success Response (201)\n\n``` json\n{\n  \"status\": \"success\",\n  \"message\": \"Booking created successfully. Pending payment confirmation.\",\n  \"data\": {\n    \"booking\": {\n      \"id\": \"...\",\n      \"workspace_id\": \"...\",\n      \"seeker_id\": \"...\",\n      \"start_time\": \"2026-08-03T14:00:00.000Z\",\n      \"end_time\": \"2026-08-03T16:00:00.000Z\",\n      \"status\": \"pending_payment\",\n      \"total_amount\": \"5000.00\"\n    }\n  }\n}\n\n ```\n\n## Error Responses\n\n### 409 Conflict\n\n``` json\n{\n  \"status\": \"error\",\n  \"message\": \"Selected time slot is no longer available.\"\n}\n\n ```\n\n### 403 Forbidden\n\n- Corporate budget exceeded\n    \n- User not authorized\n    \n\n### 400 Bad Request\n\n- Workspace not found\n    \n- Workspace not currently bookable\n    \n\nStartFragment\n\n### Example Error (409)\n\n```\n{\n  \"status\": \"error\",\n  \"message\": \"Selected time slot is no longer available.\"\n}\n\n ```\n\nEndFragment\n\n## Concurrency Test\n\nThis endpoint uses database transactions with row-level locking (`SELECT ... FOR UPDATE`) to prevent double booking.\n\nTo verify:\n\n1. Obtain a valid seeker token.\n    \n2. Send two `POST /api/bookings` requests simultaneously using the same `workspaceId`, `startTime`, and `endTime`.\n    \n3. Expected result:\n    \n    - One request returns **201 Created**.\n        \n    - The other returns **409 Conflict** with the message:  \n        `\"Selected time slot is no longer available.\"`\n        \n\nA reusable `concurrency-test.js` script is available in the project root for this test.\n\n### Success Response\n\n``` json\n{\n  \"status\": \"success\",\n  \"message\": \"Booking created successfully. Pending payment confirmation.\"\n}\n\n ```\n\n  \n\n## Notes\n\nThis endpoint is concurrency-safe.\n\nIf two users attempt to book the same workspace for the same time simultaneously, only one booking will succeed.\n\nThe second request returns HTTP 409 Conflict."
           },
           "response": []
         },
@@ -717,7 +813,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{seekerToken}}",
                   "type": "string"
                 }
               ]
@@ -731,13 +827,36 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/bookings",
+              "raw": "{{base_url}}/api/bookings/user?role=seeker&status=confirmed&page=1&limit=10",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
-                "bookings"
+                "bookings",
+                "user"
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "seeker",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "confirmed",
+                  "type": "text"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "type": "text"
+                }
               ]
             },
             "description": "Returns all bookings belonging to authenticated user."
@@ -752,7 +871,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -783,7 +902,7 @@
                 }
               ]
             },
-            "description": "Accepts a pending booking request."
+            "description": "Used when a workspace is set to Request-to-Book. The host accepts the pending request and a 6-digit check-in code is generated"
           },
           "response": []
         },
@@ -795,7 +914,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -847,10 +966,18 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
+                "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"reason\": \"Schedule clash due to project meeting shift.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/api/bookings/:id/cancel",
               "host": [
@@ -869,7 +996,7 @@
                 }
               ]
             },
-            "description": "Cancels an existing booking."
+            "description": "Cancels an existing booking. Either the seeker or the host can cancel. The response includes the `cancelled_by` field, which downstream services use for refund processing.\n\n**Authentication:** Use either a seeker or host access token.\n\n- If a seeker cancels, `cancelled_by` will be `\"seeker\"`.\n    \n- If a host cancels, `cancelled_by` will be `\"host\"`.\n    \n\n### Success Response\n\n``` json\n\"cancelled_by\": \"seeker\"\n\n ```\n\nor\n\n``` json\n\"cancelled_by\": \"host\"\n\n\n\n ```\n\n## Notes\n\nThe cancelled_by field indicates who initiated the cancellation.\n\nPossible values:\n\n- seeker\n    \n- host\n    \n\nThis field is used by the refund policy."
           },
           "response": []
         },
@@ -881,7 +1008,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{access_token}}",
+                  "value": "{{hostToken}}",
                   "type": "string"
                 }
               ]
@@ -890,10 +1017,18 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
+                "value": "application/json"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"checkinCode\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/api/bookings/:id/checkin",
               "host": [
@@ -912,7 +1047,141 @@
                 }
               ]
             },
-            "description": "Checks a user into a confirmed booking."
+            "description": "Host enters the guest's 6-digit check-in code to start the workspace session. Locked out after 3 failed attempts."
+          },
+          "response": []
+        },
+        {
+          "name": "Extend Booking",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{seeker_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"newEndTime\": \"2026-08-03T18:00:00Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bookings/:id/extend",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ":id",
+                "extend"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Extends an in-progress booking if the requested extension does not overlap another booking. Concurrent extension requests are safely handled using row-level locking.\n\n## Error Response\n\n400\n\n```\nBooking cannot be extended...\n\n ```\n\n409\n\n```\nCannot extend: the additional time overlaps another booking.\n\n ```\n\n## Notes\n\nThis endpoint is concurrency-safe.\n\nOnly one successful extension can occur for the same booking at a time."
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Booking",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{host_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/bookings/:id/complete",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ":id",
+                "complete"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "# Complete Booking\n\nMarks an in-progress booking as completed.\n\nOnly the workspace host (or an admin) can complete a booking.\n\nOnce completed, the seeker becomes eligible to submit a review.\n\n## Authorization\n\nBearer Token (Host)\n\n## Endpoint\n\nPATCH /api/bookings/:id/complete\n\n## Path Parameters\n\n| Parameter | Description |\n| --- | --- |\n| booking_id | The ID of the booking to complete. |\n\n## Request Body\n\nNone\n\n## Success Response (200)\n\n``` json\n{\n  \"status\": \"success\",\n  \"message\": \"Session marked as completed. The seeker can now leave a review.\",\n  \"data\": {\n    \"booking\": {\n      \"status\": \"completed\"\n    }\n  }\n}\n\n ```\n\n## Error Responses\n\n### 403 Forbidden\n\nReturned when a seeker attempts to complete a booking.\n\n### 404 Not Found\n\nReturned if the booking does not exist.\n\n### 400 Bad Request\n\nReturned if the booking cannot be completed because it is not currently in progress."
+          },
+          "response": []
+        },
+        {
+          "name": "Review Booking",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{seeker_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"overallRating\": 2,\r\n  \"powerReliabilityRating\": 1,\r\n  \"internetReliabilityRating\": 2,\r\n  \"powerStable\": false,\r\n  \"internetAsDescribed\": false,\r\n  \"comment\": \"Power went out twice during my session\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bookings/:id/review",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ":id",
+                "review"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "g Review Booking\n\nAllows the seeker to submit a review after a booking has been completed.\n\nA booking can only be reviewed once.\n\n## Authorization\n\nBearer Token (Seeker)\n\n## Endpoint\n\nPOST /api/bookings/:id/review\n\n## Path Parameters\n\n| Parameter | Description |\n| --- | --- |\n| booking_id | The completed booking ID. |\n\n## Request Body\n\n``` json\n{\n  \"overallRating\": 2,\n  \"powerReliabilityRating\": 1,\n  \"internetReliabilityRating\": 2,\n  \"powerStable\": false,\n  \"internetAsDescribed\": false,\n  \"comment\": \"Power went out twice during my session\"\n}\n\n ```\n\n## Success Response (200)\n\n``` json\n{\n  \"status\": \"success\",\n  \"message\": \"Review submitted successfully\",\n  \"data\": {\n    \"review\": {},\n    \"reliability\": {\n      \"workspaceId\": \"...\",\n      \"reliabilityScore\": 0,\n      \"reviewCount\": 1,\n      \"flagged\": false\n    }\n  }\n}\n\n ```\n\n## Error Responses\n\n### 409 Conflict\n\nReturned if the seeker has already submitted a review for this booking.\n\n### 403 Forbidden\n\nReturned if the authenticated user is not the booking owner.\n\n### 404 Not Found\n\nReturned if the booking does not exist."
           },
           "response": []
         }
@@ -1697,6 +1966,34 @@
   "variable": [
     {
       "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "seekerToken",
+      "value": ""
+    },
+    {
+      "key": "hostToken",
+      "value": ""
+    },
+    {
+      "key": "workspaceId",
+      "value": ""
+    },
+    {
+      "key": "corporateAccountId",
+      "value": ""
+    },
+    {
+      "key": "bookingId",
+      "value": ""
+    },
+    {
+      "key": "hostID",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
       "value": ""
     }
   ]
